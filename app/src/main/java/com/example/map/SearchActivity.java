@@ -55,7 +55,7 @@ public class SearchActivity extends AppCompatActivity {
     private static final int PERMISSIONS_REQUEST_CODE = 100;
     String[] REQUIRED_PERMISSIONS = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
     double latitude, longitude;
-    String API_KEY = "d329b67c165d1b9010d1ff5267b8df23";
+    String API_KEY = "923e747683d868ee048c3251e44439cd";
     String baseURI = "https://dapi.kakao.com/";
 
     @Override
@@ -63,6 +63,11 @@ public class SearchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Binding = DataBindingUtil.setContentView(this, R.layout.activity_location);
         Loc();
+
+        Intent intent = getIntent(); //카카오톡 이름, 프로필 가져오기
+        String nickName = intent.getExtras().getString("nickname");
+        String Image = intent.getExtras().getString("image");
+
 
         Binding.editSearch.setOnEditorActionListener(Edit);
         MapView mapView = new MapView(this);
@@ -115,7 +120,6 @@ public class SearchActivity extends AppCompatActivity {
             public void onResponse(@NonNull Call<SearchItem> call, @NonNull Response<SearchItem> response) {
                 if (response.isSuccessful()){ //안됩니다
                       Log.e("Tag",Arrays.toString(response.body().getDocuments()));
-
                 } else  Toast("응답이 실패하였습니다.1");
             }
             @Override
@@ -153,7 +157,7 @@ public class SearchActivity extends AppCompatActivity {
     }
     public void Circle(MapView mapView){
         MapCircle circle1 = new MapCircle(
-                MapPoint.mapPointWithGeoCoord(latitude, longitude), 100,
+                MapPoint.mapPointWithGeoCoord(latitude, longitude), 500,
         Color.argb(128, 255, 0, 0),
         Color.argb(128, 0, 255, 0)
         );

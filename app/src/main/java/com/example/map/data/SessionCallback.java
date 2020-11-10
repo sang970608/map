@@ -1,5 +1,6 @@
 package com.example.map.data;
 
+import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
@@ -17,7 +18,11 @@ import com.kakao.util.OptionalBoolean;
 import com.kakao.util.exception.KakaoException;
 
 public class SessionCallback implements ISessionCallback {
+    Context mcontext;
 
+    public SessionCallback(Context context) {
+        mcontext = context;
+    }
     // 로그인에 성공한 상태
     @Override
     public void onSessionOpened() {
@@ -49,28 +54,18 @@ public class SessionCallback implements ISessionCallback {
                         Log.i("KAKAO_API", "사용자 아이디: " + result.getId());
                         UserAccount kakaoAccount = result.getKakaoAccount();
                         if (kakaoAccount != null) {
-
-                            // 이메일
-                            String email = kakaoAccount.getEmail();
-
-                            if (email != null) {
-                                Log.i("KAKAO_API", "email: " + email);
-
-                            } else if (kakaoAccount.emailNeedsAgreement() == OptionalBoolean.TRUE) {
-                                // 동의 요청 후 이메일 획득 가능
-                                // 단, 선택 동의로 설정되어 있다면 서비스 이용 시나리오 상에서 반드시 필요한 경우에만 요청해야 합니다.
-
-                            } else {
-                                // 이메일 획득 불가
-                            }
-
                             // 프로필
                             Profile profile = kakaoAccount.getProfile();
 
                             if (profile != null) {
+                                //파이어 베이스에 저장으로 변경 예정
                                 Log.d("KAKAO_API", "nickname: " + profile.getNickname());
                                 Log.d("KAKAO_API", "profile image: " + profile.getProfileImageUrl());
-                                Log.d("KAKAO_API", "thumbnail image: " + profile.getThumbnailImageUrl());
+                                Intent intent = new Intent(mcontext, SearchActivity.class);
+                                intent.putExtra("nickname", profile.getNickname());
+                                intent.putExtra("image", profile.getProfileImageUrl());
+                                mcontext.startActivity(intent);
+
                             } else if (kakaoAccount.profileNeedsAgreement() == OptionalBoolean.TRUE) {
                                 // 동의 요청 후 프로필 정보 획득 가능
 
